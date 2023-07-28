@@ -114,6 +114,17 @@ static void term_putn (unsigned long n)
 	term_putc ('0' + n % 10);
 }
 
+static void term_put_xdigit (int x)
+{
+	term_putc (x < 10 ? '0' + x : 'a' - 10 + x);
+}
+
+static void term_putx (uint32_t x, int width)
+{
+	while (width-- > 0)
+		term_put_xdigit ((x >> (width * 4)) & 0xf);
+}
+
 static void show_disk (uint32_t d)
 {
 	uint8_t p;
@@ -178,6 +189,10 @@ void term_printf (const char *fmt, ...)
 			term_putn (n);
 			break;
 #endif
+		case 'x':
+			n = va_arg (ap, uint32_t);
+			term_putx (n, 8);
+			break;
 		case 'r':
 			n = va_arg (ap, uint32_t);
 			show_disk (n);
