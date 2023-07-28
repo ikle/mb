@@ -1,0 +1,14 @@
+*.o
+*.a
+*.so.*
+*.pc
+*.swp
+*-test
+
+sysroot
+
+*/doc/db
+*/doc/html
+*/doc/*.stamp
+
+kernel
