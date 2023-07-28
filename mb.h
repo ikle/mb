@@ -1,7 +1,7 @@
 /*
  * Multiboot
  *
- * Copyright (c) 2019 Alexei A. Smekalkine <ikle@ikle.ru>
+ * Copyright (c) 2019-2023 Alexei A. Smekalkine <ikle@ikle.ru>
  *
  * SPDX-License-Identifier: BSD-2-Clause
  */
@@ -37,6 +37,24 @@ struct mb_syms {
 
 struct mb_elfsyms {
 	uint32_t  num, size, addr, shndx;
+};
+
+enum e820_type {
+	E820_RAM	= 1,
+	E820_RESERVED	= 2,
+	E820_ACPI	= 3,		/* ACPI reclaimable		*/
+	E820_NVS	= 4,		/* ACPI NVS			*/
+	E820_UNUSABLE	= 5,
+	E820_DISABLED	= 6,
+	E820_NVRAM	= 7,		/* Persistent memory		*/
+	E820_OEM	= 12,
+};
+
+struct mb_region {
+	uint32_t size;			/* entry size excl. this field	*/
+	uint32_t base_lo, base_hi;	/* base address of region	*/
+	uint32_t len_lo,  len_hi;	/* region size in bytes		*/
+	uint32_t type;			/* E820 memory type		*/
 };
 
 struct mb_vbe {
