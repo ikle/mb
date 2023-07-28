@@ -206,6 +206,21 @@ void term_printf (const char *fmt, ...)
 	va_end (ap);
 }
 
+static const char *e820_to_str (int type)
+{
+	switch (type) {
+	case E820_RAM:		return "free";
+	case E820_RESERVED:	return "reserved";
+	case E820_ACPI:		return "ACPI";
+	case E820_NVS:		return "NVS";
+	case E820_UNUSABLE:	return "bad";
+	case E820_DISABLED:	return "disabled";
+	case E820_NVRAM:	return "nvram";
+	case E820_OEM:		return "OEM";
+	defualt:		return "unknown";
+	}
+}
+
 void main (struct mb_info *mbi)
 {
 	term_init ();
@@ -231,5 +246,20 @@ void main (struct mb_info *mbi)
 		term_printf ("fb height = %d\n", mbi->fb.height);
 		term_printf ("fb bpp    = %b\n", mbi->fb.bpp);
 		term_printf ("fb type   = %b\n", mbi->fb.type);
+	}
+
+	if ((mbi->flags & MBI_MMAP) != 0) {
+		void *p = (void *) mbi->mmap_addr, *end = p + mbi->mmap_len;
+		struct mb_region *e;
+
+		term_puts ("---------------- ---------------- --------\n"
+			   "      base            length        type\n"
+			   "---------------- ---------------- --------\n");
+
+		for (e = p; p < end; p += sizeof (e->size) + e->size, e = p)
+			term_printf ("%x%x %x%x %s\n",
+				     e->base_hi, e->base_lo,
+				     e->len_hi, e->len_lo,
+				     e820_to_str (e->type));
 	}
 }
