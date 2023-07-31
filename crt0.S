@@ -6,6 +6,9 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
+#
+# Multiboot Header
+#
 .set MB_ALIGN,		1 << 0	# align loaded modules on page boundaries
 .set MB_MEMINFO,	1 << 1	# provide memory map
 .set MB_VIDEO,		1 << 2  # provide video mode table
@@ -19,6 +22,9 @@
 	.long	MB_FLAGS
 	.long	-(MB_MAGIC + MB_FLAGS)
 
+#
+# Global Descriptor Table
+#
 .section .data
 .align 8
 gdt:
@@ -36,6 +42,24 @@ gdt:
 
 .set	gdt_limit, . - gdt - 1
 
+.macro load_gdt base=$gdt limit=$gdt_limit cs=$0x08 ds=$0x10
+	movw	\limit, -6(%esp)
+	movl	\base,  -4(%esp)
+	lgdt	-6(%esp)
+
+	mov	\ds, %ax
+	mov	%ax, %ds
+	mov	%ax, %es
+	mov	%ax, %fs
+	mov	%ax, %gs
+	mov	%ax, %ss
+	jmp	\cs, $1f
+1:
+.endm
+
+#
+# Kernel Entry
+#
 .section .text
 .align 16
 .global _start
@@ -45,18 +69,8 @@ _start:
 	push	%ebx
 
 	cli
-	movw	$gdt_limit, -6(%esp)
-	movl	$gdt,       -4(%esp)
-	lgdt	-6(%esp)
+	load_gdt
 
-	mov	$0x10, %ax
-	mov	%ax, %ds
-	mov	%ax, %es
-	mov	%ax, %fs
-	mov	%ax, %gs
-	mov	%ax, %ss
-	jmp	$0x08, $1f
-1:
 	call	main
 	cli
 0:	hlt
@@ -65,6 +79,9 @@ _start:
 # set the size of the _start symbol, this is useful when debugging
 .size _start, . - _start
 
+#
+# Kernel Stack
+#
 .section .note.GNU-stack, "", @progbits
 
 .section .stack, "aw", @nobits
