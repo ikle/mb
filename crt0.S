@@ -19,6 +19,23 @@
 	.long	MB_FLAGS
 	.long	-(MB_MAGIC + MB_FLAGS)
 
+.section .data
+.align 8
+gdt:
+	#	limit-lo, base-lo, access/base-mi, base-hi/flags/limit-hi
+	#	  LLLL    BBBB    AABB    BFLL
+	.word	0x0000, 0x0000, 0x0000, 0x0000
+	#	base = 0, limit = 0xFFFFF, access = 0x9A, flags = 0xC
+	.word	0xffff, 0x0000, 0x9a00, 0x00cf
+	#	base = 0, limit = 0xFFFFF, access = 0x92, flags = 0xC
+	.word	0xffff, 0x0000, 0x9200, 0x00cf
+	#	base = 0, limit = 0xFFFFF, access = 0xFA, flags = 0xC
+	.word	0xffff, 0x0000, 0xfa00, 0x00cf
+	#	base = 0, limit = 0xFFFFF, access = 0xF2, flags = 0xC
+	.word	0xffff, 0x0000, 0xf200, 0x00cf
+
+.set	gdt_limit, . - gdt - 1
+
 .section .text
 .align 16
 .global _start
@@ -26,6 +43,20 @@
 _start:
 	movl	$stack_top, %esp
 	push	%ebx
+
+	cli
+	movw	$gdt_limit, -6(%esp)
+	movl	$gdt,       -4(%esp)
+	lgdt	-6(%esp)
+
+	mov	$0x10, %ax
+	mov	%ax, %ds
+	mov	%ax, %es
+	mov	%ax, %fs
+	mov	%ax, %gs
+	mov	%ax, %ss
+	jmp	$0x08, $1f
+1:
 	call	main
 	cli
 0:	hlt
