@@ -37,7 +37,7 @@ enum vga_color {
 	COLOR_WHITE,
 };
 
-static unsigned short term_crti, term_width = 80, term_height = 25;
+static unsigned short term_crti, term_width, term_height;
 static unsigned short term_x, term_y;
 static unsigned char term_color;
 static uint16_t *term_frame;
