@@ -95,6 +95,9 @@ void term_init (void)
 
 static void term_newline (void)
 {
+	const size_t limit = term_width * (term_height - 1);
+	size_t i;
+
 	term_x = 0;
 
 	if (++term_y < term_height) {
@@ -102,8 +105,14 @@ static void term_newline (void)
 		return;
 	}
 
-	term_y = 0;
+	for (i = 0; i < limit; ++i)
+		term_frame[i] = term_frame[i + term_width];
+
+	term_y = term_height - 1;
 	term_setcursor ();
+
+	for (i = 0; i < term_width; ++i)
+		put_at (i, term_y, ' ');
 }
 
 void term_putc (int c)
