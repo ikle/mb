@@ -13,6 +13,11 @@
 
 #include "mb.h"
 
+enum mc6848_reg {
+	MC6848_CURSOR_HI	= 0x0e,
+	MC6848_CURSOR_LO	= 0x0f,
+};
+
 enum vga_color {
 	COLOR_BLACK,
 	COLOR_BLUE,
@@ -32,10 +37,26 @@ enum vga_color {
 	COLOR_WHITE,
 };
 
-static unsigned short term_width = 80, term_height = 25;
+static unsigned short term_crti, term_width = 80, term_height = 25;
 static unsigned short term_x, term_y;
 static unsigned char term_color;
 static uint16_t *term_frame;
+
+static inline void outb (unsigned short port, unsigned char value)
+{
+	__asm__ __volatile__ ("outb %0, %1" :: "a" (value), "d" (port));
+}
+
+static void term_setcursor (void)
+{
+	const uint16_t loc = term_y * term_width + term_x;
+
+	outb (term_crti, MC6848_CURSOR_HI);
+	outb (term_crti + 1, (loc >> 8) & 0xff);
+
+	outb (term_crti, MC6848_CURSOR_LO);
+	outb (term_crti + 1, loc & 0xff);
+}
 
 void term_setcolor (enum vga_color fg, enum vga_color bg)
 {
@@ -57,12 +78,15 @@ void term_clear (void)
 	for (y = 0; y < term_height; ++y)
 		for (x = 0; x < term_width; ++x)
 			put_at (x, y, ' ');
+
+	term_setcursor ();
 }
 
 void term_init (void)
 {
 	size_t x, y, i;
 
+	term_crti   = *((uint16_t *) 0x463);
 	term_width  = *((uint16_t *) 0x44a);
 	term_height = *((uint8_t *)  0x484) + 1;
 	term_frame  = (void *) 0xb8000;
@@ -75,10 +99,13 @@ static void term_newline (void)
 {
 	term_x = 0;
 
-	if (++term_y < term_height)
+	if (++term_y < term_height) {
+		term_setcursor ();
 		return;
+	}
 
 	term_y = 0;
+	term_setcursor ();
 }
 
 void term_putc (int c)
@@ -89,13 +116,16 @@ void term_putc (int c)
 		return;
 	case '\r':
 		term_x = 0;
+		term_setcursor ();
 		return;
 	}
 
 	put_at (term_x, term_y, c);
 
-	if (++term_x < term_width)
+	if (++term_x < term_width) {
+		term_setcursor ();
 		return;
+	}
 
 	term_newline ();
 }
