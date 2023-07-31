@@ -84,8 +84,6 @@ void term_clear (void)
 
 void term_init (void)
 {
-	size_t x, y, i;
-
 	term_crti   = *((uint16_t *) 0x463);
 	term_width  = *((uint16_t *) 0x44a);
 	term_height = *((uint8_t *)  0x484) + 1;
