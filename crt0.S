@@ -25,20 +25,22 @@
 #
 # Global Descriptor Table
 #
+.macro gdt_entry base=0 limit=0 access=0 flags=0
+	.word	(\limit & 0xffff)
+	.word	(\base  & 0xffff)
+	.word	(\base  >> 16 & 0x00ff) | (\access << 8 & 0xff00)
+	.word	(\limit >> 16 & 0x000f) | (\flags  << 4 & 0x00f0) | \
+		(\base  >> 16 & 0xff00)
+.endm
+
 .section .data
 .align 8
 gdt:
-	#	limit-lo, base-lo, access/base-mi, base-hi/flags/limit-hi
-	#	  LLLL    BBBB    AABB    BBFL
-	.word	0x0000, 0x0000, 0x0000, 0x0000
-	#	base = 0, limit = 0xFFFFF, access = 0x9A, flags = 0xC
-	.word	0xffff, 0x0000, 0x9a00, 0x00cf
-	#	base = 0, limit = 0xFFFFF, access = 0x92, flags = 0xC
-	.word	0xffff, 0x0000, 0x9200, 0x00cf
-	#	base = 0, limit = 0xFFFFF, access = 0xFA, flags = 0xC
-	.word	0xffff, 0x0000, 0xfa00, 0x00cf
-	#	base = 0, limit = 0xFFFFF, access = 0xF2, flags = 0xC
-	.word	0xffff, 0x0000, 0xf200, 0x00cf
+	gdt_entry
+	gdt_entry limit=0xFFFFF access=0x9A flags=0xC
+	gdt_entry limit=0xFFFFF access=0x92 flags=0xC
+	gdt_entry limit=0xFFFFF access=0xFA flags=0xC
+	gdt_entry limit=0xFFFFF access=0xF2 flags=0xC
 
 .set	gdt_limit, . - gdt - 1
 
