@@ -29,7 +29,7 @@
 .align 8
 gdt:
 	#	limit-lo, base-lo, access/base-mi, base-hi/flags/limit-hi
-	#	  LLLL    BBBB    AABB    BFLL
+	#	  LLLL    BBBB    AABB    BBFL
 	.word	0x0000, 0x0000, 0x0000, 0x0000
 	#	base = 0, limit = 0xFFFFF, access = 0x9A, flags = 0xC
 	.word	0xffff, 0x0000, 0x9a00, 0x00cf
