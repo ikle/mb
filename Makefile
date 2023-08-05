@@ -9,7 +9,7 @@ QEMU     = qemu-system-i386 -enable-kvm
 
 all: kernel
 
-kernel: crt0.o kernel.c
+kernel: crt0.o kernel.c irq.c
 
 clean:
 	rm -f *.o kernel resque.img resque/boot/kernel

@@ -60,6 +60,73 @@ gdt:
 .endm
 
 #
+# Interrupt Descriptor Table
+#
+.macro idt_gate index=0 emask=0x00007d00
+	.section .text.gates
+	.align	16
+isr_\index:
+	.if !(\emask & (1 << \index))
+		push	$0
+	.endif
+	push	$\index
+	jmp	isr_common
+.endm
+
+.macro idt_entry entry=0 cs=0x08 p=1 dpl=0 type=0xE
+	.section .data
+	.align	8
+
+	.word	(\entry & 0xffff)
+	.word	(\cs    & 0xffff)
+	.word	(\p     << 15 & 0x8000) | (\dpl << 13 & 0x6000) | \
+		(\type  <<  8 & 0x0f00)
+	.word	(\entry >> 16 & 0xffff)
+.endm
+
+.section .data
+	.align	8
+idt:
+.irp	index,  0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, \
+	       16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31
+	idt_gate \index
+	idt_entry entry="(\index * 16 + 0x100010)"
+.endr
+
+.set	idt_limit, . - idt - 1
+
+.section .text.gates
+	.align	16
+isr_common:
+	pusha
+	push	%ds
+	push	%es
+	push	%fs
+	push	%gs
+
+	mov	$0x10, %eax
+	mov	%ax, %ds
+	mov	%ax, %es
+	mov	%ax, %fs
+	mov	%ax, %gs
+
+	call	irq_entry
+
+	pop	%gs
+	pop	%fs
+	pop	%es
+	pop	%ds
+	popa
+	add	$8, %esp
+	iret
+
+.macro load_idt base=$idt limit=$idt_limit
+	movw	\limit, -6(%esp)
+	movl	\base,  -4(%esp)
+	lidt	-6(%esp)
+.endm
+
+#
 # Kernel Entry
 #
 .section .text
@@ -72,6 +139,7 @@ _start:
 
 	cli
 	load_gdt
+	load_idt
 
 	call	main
 	cli

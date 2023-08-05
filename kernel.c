@@ -299,4 +299,7 @@ void main (struct mb_info *mbi)
 				     e->len_hi, e->len_lo,
 				     e820_to_str (e->type));
 	}
+
+	asm volatile ("int $3");
+	asm volatile ("int $4");
 }
