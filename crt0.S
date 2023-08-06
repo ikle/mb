@@ -6,7 +6,7 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
-.include "gdt.inc"
+.include "arch/i386/gdt.inc"
 .include "pic.inc"
 
 #
