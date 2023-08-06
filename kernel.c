@@ -11,6 +11,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#include "arch/i386/io.h"
 #include "mb.h"
 
 enum mc6848_reg {
@@ -41,11 +42,6 @@ static unsigned short term_crti, term_width, term_height;
 static unsigned short term_x, term_y;
 static unsigned char term_color;
 static uint16_t *term_frame;
-
-static inline void outb (unsigned short port, unsigned char value)
-{
-	__asm__ __volatile__ ("outb %0, %1" :: "a" (value), "d" (port));
-}
 
 static void term_setcursor (void)
 {
