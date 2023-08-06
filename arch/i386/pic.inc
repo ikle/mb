@@ -21,7 +21,7 @@
 	out	%al, $0x80
 .endm
 
-.macro pic_init base=0x20 ICW1=0 vector=8 ICW3=0 ICW4=0
+.macro pic_init base=0x20 ICW1=0 vector=8 ICW3=0 AEOI=0
 	outb_p	$(PIC_ICW1 | PIC_ICW1_IC4 | \ICW1), $(\base)
 	outb_p	$(\vector), $(\base + 1)
 
@@ -29,7 +29,7 @@
 		outb_p	$(\ICW3), $(\base + 1)
 	.endif
 
-	outb_p	$(PIC_ICW4_8086 | \ICW4), $(\base + 1)
+	outb_p	$(PIC_ICW4_8086 | (\AEOI << 1 & 0x02)), $(\base + 1)
 .endm
 
 # vi: set ft=asm :
