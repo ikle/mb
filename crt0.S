@@ -122,8 +122,8 @@ _start:
 	load_gdt
 	load_idt
 
-	pic_init base=0x20 vector=0x20 ICW3=(1 << 2)	# slave at IR2
-	pic_init base=0xA0 vector=0x28 ICW3=2		# slave id = 2
+	pic_init base=0x20 vector=0x20 ICW3=0x04 AEOI=1  # slave at IR2
+	pic_init base=0xA0 vector=0x28 ICW3=2    AEOI=1  # slave id = 2
 
 	call	main
 	cli
