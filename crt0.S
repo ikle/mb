@@ -7,7 +7,7 @@
 #
 
 .include "arch/i386/gdt.inc"
-.include "pic.inc"
+.include "arch/i386/pic.inc"
 
 #
 # Multiboot Header
