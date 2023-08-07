@@ -14,9 +14,9 @@
 #include "arch/i386/io.h"
 #include "mb.h"
 
-enum mc6848_reg {
-	MC6848_CURSOR_HI	= 0x0e,
-	MC6848_CURSOR_LO	= 0x0f,
+enum mc6845_reg {
+	MC6845_CURSOR_HI	= 0x0e,
+	MC6845_CURSOR_LO	= 0x0f,
 };
 
 enum vga_color {
@@ -47,10 +47,10 @@ static void term_setcursor (void)
 {
 	const uint16_t loc = term_y * term_width + term_x;
 
-	outb (term_crti, MC6848_CURSOR_HI);
+	outb (term_crti, MC6845_CURSOR_HI);
 	outb (term_crti + 1, (loc >> 8) & 0xff);
 
-	outb (term_crti, MC6848_CURSOR_LO);
+	outb (term_crti, MC6845_CURSOR_LO);
 	outb (term_crti + 1, loc & 0xff);
 }
 
