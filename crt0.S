@@ -30,16 +30,15 @@
 #
 # Global Descriptor Table
 #
-.section .data
-.align 8
-gdt:
+	gdt_header
+
 	gdt_entry
 	gdt_entry limit=0xFFFFF access=0x9A flags=0xC
 	gdt_entry limit=0xFFFFF access=0x92 flags=0xC
 	gdt_entry limit=0xFFFFF access=0xFA flags=0xC
 	gdt_entry limit=0xFFFFF access=0xF2 flags=0xC
 
-.set	gdt_limit, . - gdt - 1
+	gdt_trailer
 
 #
 # Interrupt Descriptor Table

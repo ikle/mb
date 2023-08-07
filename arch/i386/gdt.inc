@@ -6,6 +6,12 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
+.macro gdt_header
+	.section .data
+	.align	8
+gdt:
+.endm
+
 .macro gdt_entry base=0 limit=0 access=0 flags=0
 	.section .data
 	.align	8
@@ -29,6 +35,12 @@
 	mov	%ax, %ss
 	jmp	\cs, $1f
 1:
+.endm
+
+.macro gdt_trailer
+	.section .data
+	.align	8
+	.set	gdt_limit, . - gdt - 1
 .endm
 
 # vi: set ft=asm :
