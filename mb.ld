@@ -6,12 +6,14 @@ SECTIONS {
 
 	.text BLOCK (4K) : ALIGN (4K) {
 		*(.multiboot)
-		*(.text.gates)
+		*(.text.idt)
 		*(.text)
 		*(.rodata)
 	}
 
 	.data BLOCK (4K) : ALIGN (4K) {
+		*(.data.gdt)
+		*(.data.idt)
 		*(.data)
 	}
 

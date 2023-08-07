@@ -7,13 +7,13 @@
 #
 
 .macro idt_header
-	.section .data
+	.section .data.idt
 	.align	8
 idt:
 .endm
 
 .macro idt_gate index=0 emask=0x00007d00
-	.section .text.gates
+	.section .text.idt
 	.align	16
 isr_\index:
 	.if !(\emask & (1 << \index))
@@ -24,7 +24,7 @@ isr_\index:
 .endm
 
 .macro idt_entry entry=0 cs=0x08 p=1 dpl=0 type=0xE
-	.section .data
+	.section .data.idt
 	.align	8
 
 	.word	(\entry & 0xffff)
@@ -40,11 +40,11 @@ isr_\index:
 .endm
 
 .macro idt_trailer
-	.section .data
+	.section .data.idt
 	.align	8
 	.set	idt_limit, . - idt - 1
 
-	.section .text.gates
+	.section .text.idt
 	.align	16
 isr_common:
 	pusha

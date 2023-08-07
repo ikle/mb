@@ -7,13 +7,13 @@
 #
 
 .macro gdt_header
-	.section .data
+	.section .data.gdt
 	.align	8
 gdt:
 .endm
 
 .macro gdt_entry base=0 limit=0 access=0 flags=0
-	.section .data
+	.section .data.gdt
 	.align	8
 
 	.word	(\limit & 0xffff)
@@ -38,7 +38,7 @@ gdt:
 .endm
 
 .macro gdt_trailer
-	.section .data
+	.section .data.gdt
 	.align	8
 	.set	gdt_limit, . - gdt - 1
 .endm
