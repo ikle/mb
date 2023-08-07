@@ -15,12 +15,12 @@ idt:
 .macro idt_gate index=0 emask=0x00007d00
 	.section .text.idt
 	.align	16
-isr_\index:
+idt_gate_\index:
 	.if !(\emask & (1 << \index))
 		push	$0
 	.endif
 	push	$\index
-	jmp	isr_common
+	jmp	idt_gate_common
 .endm
 
 .macro idt_entry entry=0 cs=0x08 p=1 dpl=0 type=0xE
@@ -46,7 +46,7 @@ isr_\index:
 
 	.section .text.idt
 	.align	16
-isr_common:
+idt_gate_common:
 	pusha
 	push	%ds
 	push	%es
