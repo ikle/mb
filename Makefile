@@ -9,7 +9,8 @@ QEMU     = qemu-system-i386 -enable-kvm
 
 all: kernel
 
-crt0.o: arch/i386/gdt.inc arch/i386/pic.inc arch/i386/pit.inc
+crt0.o: arch/i386/gdt.inc arch/i386/idt.inc
+crt0.o: arch/i386/pic.inc arch/i386/pit.inc
 kernel: crt0.o kernel.c irq.c
 
 clean:
