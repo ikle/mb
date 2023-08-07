@@ -12,5 +12,9 @@ void term_printf (const char *fmt, ...);
 
 void irq_entry (struct pt_regs st)
 {
-	term_printf ("N: got interrupt %d, err = %d\n", st.trapno, st.err);
+	switch (st.trapno) {
+	default:
+		term_printf ("W: unhandled interrupt %d, err = %d\n",
+			     st.trapno, st.err);
+	}
 }
