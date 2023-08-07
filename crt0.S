@@ -130,7 +130,6 @@ _start:
 	sti
 
 	call	main
-	cli
 0:	hlt
 	jmp	0b
 
