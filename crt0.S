@@ -8,6 +8,7 @@
 
 .include "arch/i386/gdt.inc"
 .include "arch/i386/pic.inc"
+.include "arch/i386/pit.inc"
 
 #
 # Multiboot Header
@@ -124,6 +125,9 @@ _start:
 
 	pic_init base=0x20 vector=0x20 ICW3=0x04 AEOI=1  # slave at IR2
 	pic_init base=0xA0 vector=0x28 ICW3=2    AEOI=1  # slave id = 2
+
+	pit_init channel=0 mode=3 counter=1193
+	sti
 
 	call	main
 	cli
