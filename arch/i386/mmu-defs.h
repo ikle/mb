@@ -32,4 +32,6 @@
 #define PAGE_L1_BASE	(0u - PAGE_L1_SIZE * PAGE_L2_COUNT)
 #define PAGE_L2_BASE	(0u - PAGE_L2_SIZE)
 
+#define VMA_TOP		PAGE_L1_BASE
+
 #endif  /* ARCH_I386_MMU_DEFS_H */
