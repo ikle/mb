@@ -10,6 +10,7 @@ QEMU     = qemu-system-i386 -enable-kvm
 all: kernel
 
 arch/i386/mmu.o: arch/i386/mmu-defs.h arch/i386/mmu.h
+arch/i386/pma.o: arch/i386/mmu-defs.h arch/i386/mmu.h arch/i386/pma.h
 
 crt0.o: arch/i386/gdt.inc arch/i386/idt.inc
 crt0.o: arch/i386/pic.inc arch/i386/pit.inc

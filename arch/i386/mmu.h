@@ -14,6 +14,8 @@
 #define PMA_P	0x1000		/* first process PD page		*/
 #define PMA_L	0x2000		/* low 4M with boot time 1:1 mapping	*/
 #define PMA_K	0x3000		/* kernel start area 4M at 3G		*/
+#define PMA_IL	0x4000		/* inital page pool, first page		*/
+#define PMA_IH	0xF000		/* inital page pool, last page		*/
 
 void mmu_init (void);
 
