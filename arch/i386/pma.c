@@ -28,12 +28,15 @@ static void pma_push (struct pma *p, uint32_t pma)
 	free = p;
 }
 
-static void pma_reserve_lo (uint32_t pma)
+static void pma_reserve (struct pma *p)
 {
-	struct pma *p = l1_0 + (pma >> PAGE_L1_POS);
-
 	p->refs = 1;
 	p->dev  = 1;  /* RAM device */
+}
+
+static void pma_reserve_lo (uint32_t pma)
+{
+	pma_reserve (l1_0 + (pma >> PAGE_L1_POS));
 }
 
 static void pma_push_lo (uint32_t pma)
@@ -63,7 +66,7 @@ void pma_init (void)
 
 void *malloc (size_t count);
 
-static void pma_add_page (uint32_t pma)
+static void pma_add_page (uint32_t pma, int res)
 {
 	PMA_DEFINE_ACCES
 
@@ -78,16 +81,19 @@ static void pma_add_page (uint32_t pma)
 	if (l0->dev != 0)
 		return;  /* EEXIST */
 
-	pma_push (l0, pma);
+	if (res)
+		pma_reserve (l0);
+	else
+		pma_push (l0, pma);
 }
 
-void pma_add_range (uint32_t from, uint32_t to)
+void pma_add_range (uint32_t from, uint32_t to, int res)
 {
 	from = (from + PAGE_L0_MASK) & ~PAGE_L0_MASK;  /* align forward  */
 	to   = (to                 ) & ~PAGE_L0_MASK;  /* align backward */
 
 	for (; from < to; from += PAGE_L0_SIZE)
-		pma_add_page (from);
+		pma_add_page (from, res);
 }
 
 uint32_t pma_alloc (void)
