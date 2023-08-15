@@ -19,7 +19,7 @@ struct pma {
 
 static struct pma *l2[PAGE_L2_COUNT], l1_0[PAGE_L1_COUNT], *free = NULL;
 
-static void pma_push (struct pma *p, uint32_t pma)
+static void pma_free (struct pma *p, uint32_t pma)
 {
 	p->next = free;
 	p->refs = 1;
@@ -40,9 +40,9 @@ static void pma_reserve_lo (uint32_t pma)
 	pma_reserve (l1_0 + (pma >> PAGE_L1_POS), pma);
 }
 
-static void pma_push_lo (uint32_t pma)
+static void pma_free_lo (uint32_t pma)
 {
-	pma_push (l1_0 + (pma >> PAGE_L1_POS), pma);
+	pma_free (l1_0 + (pma >> PAGE_L1_POS), pma);
 }
 
 void pma_init (void)
@@ -56,7 +56,7 @@ void pma_init (void)
 	pma_reserve_lo (PMA_K);
 
 	for (pma = PMA_IL; pma <= PMA_IH; pma += PAGE_L0_SIZE)
-		pma_push_lo (pma);
+		pma_free_lo (pma);
 }
 
 #define PMA_DEFINE_ACCES					\
@@ -85,7 +85,7 @@ static void pma_add_page (uint32_t pma, int res)
 	if (res)
 		pma_reserve (l0, pma);
 	else
-		pma_push (l0, pma);
+		pma_free (l0, pma);
 }
 
 void pma_add_range (uint32_t from, uint32_t to, int res)
@@ -128,7 +128,7 @@ uint32_t pma_unref (uint32_t pma)
 		return 0;  /* EFAULT: foreign or free page */
 
 	if (--l0->refs == 1)
-		pma_push (l0, pma);
+		pma_free (l0, pma);
 
 	return l0->refs;
 }
