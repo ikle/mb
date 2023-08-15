@@ -14,7 +14,7 @@
 static inline void *memset (void *dst, int c, size_t count)
 {
 	asm volatile (
-		"cld; rep stosb"
+		"rep stosb"
 		: "+D" (dst), "+c" (count)
 		: "a" (c)
 		: "cc", "memory"
@@ -26,7 +26,7 @@ static inline void *memset (void *dst, int c, size_t count)
 static inline void *memcpy (void *dst, const void *src, size_t count)
 {
 	asm volatile (
-		"cld; rep movsb"
+		"rep movsb"
 		: "+D" (dst), "+S" (src), "+c" (count)
 		:
 		: "cc", "memory"
