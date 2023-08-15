@@ -11,6 +11,8 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#include <arch/i386/pma.h>
+
 #include "arch/i386/io.h"
 #include "mb.h"
 
@@ -284,6 +286,7 @@ void main (struct mb_info *mbi)
 	if ((mbi->flags & MBI_MMAP) != 0) {
 		void *p = (void *) mbi->mmap_addr, *end = p + mbi->mmap_len;
 		struct mb_region *e;
+		uint32_t base, len;
 
 		term_puts ("---------------- ---------------- --------\n"
 			   "      base            length        type\n"
@@ -294,5 +297,13 @@ void main (struct mb_info *mbi)
 				     e->base_hi, e->base_lo,
 				     e->len_hi, e->len_lo,
 				     e820_to_str (e->type));
+
+		for (e = p; p < end; p += sizeof (e->size) + e->size, e = p)
+			if (e->type == E820_RAM) {
+				base = (e->base_hi << 16 | e->base_lo);
+				len  = (e->len_hi  << 16 | e->len_lo);
+
+				pma_add_range (base, base + len, 0);
+			}
 	}
 }
