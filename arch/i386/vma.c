@@ -36,9 +36,7 @@ uint32_t vma_to_pma (const void *vma)
 	return (l1[i1] & ~PAGE_L0_MASK) + ((uint32_t) vma & PAGE_L0_MASK);
 }
 
-static bool vma_alloc_page_nc (void *vma, int mode);
-
-static bool vma_map_page_nc (const void *vma, uint32_t pma, int mode)
+bool vma_map_page_nc (const void *vma, uint32_t pma, int mode)
 {
 	VMA_DEFINE_ACCES
 	uint32_t prev;
@@ -59,7 +57,7 @@ static bool vma_map_page_nc (const void *vma, uint32_t pma, int mode)
 	return true;
 }
 
-static void vma_unmap_page_nc (const void *vma)
+void vma_unmap_page_nc (const void *vma)
 {
 	VMA_DEFINE_ACCES
 	uint32_t pma;
@@ -80,7 +78,7 @@ static void vma_unmap_page_nc (const void *vma)
 	}
 }
 
-static bool vma_alloc_page_nc (void *vma, int mode)
+bool vma_alloc_page_nc (void *vma, int mode)
 {
 	uint32_t pma;
 	bool ok;

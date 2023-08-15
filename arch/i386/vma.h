@@ -16,6 +16,10 @@ void     vma_init   (void);
 bool     vma_mapped (const void *vma);
 uint32_t vma_to_pma (const void *vma);
 
+bool vma_map_page_nc   (const void *vma, uint32_t pma, int mode);
+void vma_unmap_page_nc (const void *vma);
+bool vma_alloc_page_nc (void *vma, int mode);
+
 bool vma_map_page   (const void *vma, uint32_t pma, int mode);
 void vma_unmap_page (const void *vma);
 bool vma_alloc_page (void *vma, int mode);
