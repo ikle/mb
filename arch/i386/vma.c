@@ -107,7 +107,7 @@ static inline bool vma_validate_page (const void *vma, uint32_t pma)
 bool vma_map_page (const void *vma, uint32_t pma, int mode)
 {
 	if (!vma_validate_page (vma, pma))
-		return NULL;  /* EINVAL */
+		return false;  /* EINVAL */
 
 	return vma_map_page_nc (vma, pma, mode);
 }
