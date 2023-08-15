@@ -16,7 +16,7 @@ arch/i386/vma.o: arch/i386/mmu-defs.h arch/i386/mmu.h arch/i386/pma.h arch/i386/
 crt0.o: arch/i386/gdt.inc arch/i386/idt.inc
 crt0.o: arch/i386/pic.inc arch/i386/pit.inc
 
-kernel: lib/string.o arch/i386/mmu.o
+kernel: lib/string.o arch/i386/mmu.o arch/i386/pma.o arch/i386/vma.o
 kernel: crt0.o kernel.c irq.c
 
 clean:

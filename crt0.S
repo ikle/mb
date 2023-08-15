@@ -68,6 +68,7 @@ _start:
 	cli
 	load_gdt
 	call	mmu_init
+	call	pma_init
 
 	load_idt
 
