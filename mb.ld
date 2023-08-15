@@ -4,8 +4,12 @@ SECTIONS {
 	/* load address at 1 MB */
 	. = 1M;
 
-	.text BLOCK (4K) : ALIGN (4K) {
+	.boot BLOCK (4K) : ALIGN (4K) {
 		*(.multiboot)
+		*(.text.boot)
+	}
+
+	.text BLOCK (4K) : {
 		*(.text.idt)
 		*(.text)
 		*(.rodata)

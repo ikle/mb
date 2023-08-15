@@ -49,7 +49,7 @@
 	       16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, \
 	       32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47
 	idt_gate \index
-	idt_entry entry="(\index * 16 + 0x100010)"
+	idt_entry entry="(\index * 16 + 0x101000)"
 .endr
 
 	idt_trailer
@@ -57,17 +57,21 @@
 #
 # Kernel Entry
 #
-.section .text
+.section .text.boot
 .align 16
 .global _start
-.type _start, @function
 _start:
 	cli	# must be disabled already, see multiboot spec
 	cld	# SysV ABI requires DF = 0, multiboot allows any here
 
 	movl	$stack_top, %esp
 	call	mmu_init
+	lea	1f, %eax
+	jmp	*%eax
 
+.section .text
+.align 16
+1:
 	load_gdt
 	call	pma_init
 	load_idt
@@ -82,9 +86,6 @@ _start:
 	call	main
 0:	hlt
 	jmp	0b
-
-# set the size of the _start symbol, this is useful when debugging
-.size _start, . - _start
 
 #
 # Kernel Stack

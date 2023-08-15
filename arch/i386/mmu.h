@@ -11,7 +11,7 @@
 
 #include <stdint.h>
 
-void mmu_init (void);
+void mmu_init (void) __attribute__ ((section (".text.boot")));
 
 static inline void mmu_switch (uint32_t pd)
 {
