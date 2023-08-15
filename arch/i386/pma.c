@@ -11,81 +11,55 @@
 #include <arch/i386/mmu-defs.h>
 #include <arch/i386/mmu.h>
 #include <arch/i386/pma.h>
+#include <arch/i386/vma.h>
 
-struct pma {
-	struct pma *next;
-	uint32_t refs, pma, pad;
-};
+static struct pma *free = NULL;
 
-static struct pma *l2[PAGE_L2_COUNT], l1_0[PAGE_L1_COUNT], *free = NULL;
+static uint32_t pma_address (struct pma *p)
+{
+	const struct pma *map = (void *) PMA_BASE;
 
-static void pma_free (struct pma *p, uint32_t pma)
+	return (uint32_t) (p - map) << PAGE_L1_POS;
+}
+
+static void pma_free (struct pma *p)
 {
 	p->next = free;
 	p->refs = 1;
-	p->pma  = pma & ~PAGE_L0_MASK;
 
 	free = p;
 }
 
-static void pma_reserve (struct pma *p, uint32_t pma)
+static void pma_reserve (struct pma *p)
 {
 	p->next = NULL;
 	p->refs = 2;
-	p->pma  = pma & ~PAGE_L0_MASK;
 }
 
-static void pma_reserve_lo (uint32_t pma)
-{
-	pma_reserve (l1_0 + (pma >> PAGE_L1_POS), pma);
-}
-
-static void pma_free_lo (uint32_t pma)
-{
-	pma_free (l1_0 + (pma >> PAGE_L1_POS), pma);
-}
+#define PMA_DEFINE_ACCES				\
+	struct pma *map = (void *) PMA_BASE;		\
+	struct pma *p   = map + (pma >> PAGE_L1_POS);
 
 void pma_init (void)
 {
-	uint32_t pma;
-
-	l2[0] = l1_0;
-
-	pma_reserve_lo (PMA_P);
-	pma_reserve_lo (PMA_L);
-	pma_reserve_lo (PMA_K);
-
-	for (pma = PMA_IL; pma <= PMA_IH; pma += PAGE_L0_SIZE)
-		pma_free_lo (pma);
+	pma_add_range (PMA_RS, PMA_RE, 1);
+	pma_add_range (PMA_FS, PMA_FE, 0);
 }
-
-#define PMA_DEFINE_ACCES					\
-	const uint32_t i2 = pma >> PAGE_L2_POS & PAGE_L2_MASK;	\
-	const uint32_t i1 = pma >> PAGE_L1_POS & PAGE_L1_MASK;	\
-	struct pma *l1 = l2[i2];				\
-	struct pma *l0 = l1 + i1;
-
-void *malloc (size_t count);
 
 static void pma_add_page (uint32_t pma, int res)
 {
 	PMA_DEFINE_ACCES
 
-	if (l1 == NULL) {
-		if ((l1 = malloc (sizeof (l1_0))) == NULL)
-			return;  /* ENOMEM */
+	if (!vma_mapped (p) && !vma_alloc_page_nc (p, 2))
+		return;  /* ENOMEM */
 
-		l2[i2] = l1;
-		l0 = l1 + i1;
-	}
-
-	if (l0->refs != 0)
+	if (p->refs != 0)
 		return;  /* EEXIST */
 
 	if (res)
-		pma_reserve (l0, pma);
+		pma_reserve (p);
 	else
-		pma_free (l0, pma);
+		pma_free (p);
 }
 
 void pma_add_range (uint32_t from, uint32_t to, int res)
@@ -107,28 +81,28 @@ uint32_t pma_alloc (void)
 	free = p->next;
 	p->next = NULL;
 	p->refs = 2;
-	return p->pma;
+	return pma_address (p);
 }
 
 uint32_t pma_ref (uint32_t pma)
 {
 	PMA_DEFINE_ACCES
 
-	if (l1 == NULL || l0->refs < 2)
+	if (!vma_mapped (p) || p->refs < 2)
 		return 0;  /* EFAULT: foreign or free page */
 
-	return ++l0->refs;
+	return ++p->refs;
 }
 
 uint32_t pma_unref (uint32_t pma)
 {
 	PMA_DEFINE_ACCES
 
-	if (l1 == NULL || l0->refs < 2)
+	if (!vma_mapped (p) || p->refs < 2)
 		return 0;  /* EFAULT: foreign or free page */
 
-	if (--l0->refs == 1)
-		pma_free (l0, pma);
+	if (--p->refs == 1)
+		pma_free (p);
 
-	return l0->refs;
+	return p->refs;
 }
