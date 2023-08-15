@@ -62,10 +62,11 @@
 .global _start
 .type _start, @function
 _start:
+	cli	# must be disabled already, see multiboot spec
+
 	movl	$stack_top, %esp
 	push	%ebx
 
-	cli
 	load_gdt
 	call	mmu_init
 	call	pma_init
