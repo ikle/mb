@@ -13,7 +13,6 @@
 #include <stdint.h>
 
 void     vma_init   (void);
-bool     vma_mapped (const void *vma);
 uint32_t vma_to_pma (const void *vma);
 
 bool vma_map_page_nc   (const void *vma, uint32_t pma, int mode);

@@ -13,19 +13,6 @@
 #include <arch/i386/pma.h>
 #include <arch/i386/vma.h>
 
-#define VMA_DEFINE_ACCES						    \
-	const uint32_t i2 = (uint32_t) vma >> PAGE_L2_POS & PAGE_L2_MASK;   \
-	const uint32_t i1 = (uint32_t) vma >> PAGE_L1_POS & PAGE_L1_MASK;   \
-	uint32_t *l2 = (uint32_t *) PAGE_L2_BASE;			    \
-	uint32_t *l1 = (uint32_t *) PAGE_L1_BASE + PAGE_L1_COUNT * i2;
-
-bool vma_mapped (const void *vma)
-{
-	VMA_DEFINE_ACCES
-
-	return l2[i2] != 0 && l1[i1] != 0;
-}
-
 uint32_t vma_to_pma (const void *vma)
 {
 	VMA_DEFINE_ACCES
