@@ -68,10 +68,10 @@ _start:
 	movl	$stack_top, %esp
 	push	%ebx
 
-	load_gdt
 	call	mmu_init
-	call	pma_init
 
+	load_gdt
+	call	pma_init
 	load_idt
 
 	pic_init base=0x20 vector=0x20 ICW3=0x04 AEOI=1  # slave at IR2
