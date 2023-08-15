@@ -63,6 +63,7 @@
 .type _start, @function
 _start:
 	cli	# must be disabled already, see multiboot spec
+	cld	# SysV ABI requires DF = 0, multiboot allows any here
 
 	movl	$stack_top, %esp
 	push	%ebx
