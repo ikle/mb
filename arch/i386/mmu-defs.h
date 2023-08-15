@@ -47,10 +47,9 @@ struct pma {
 #define PMA_L		0x2000	/* low 4M with boot time 1:1 mapping	*/
 #define PMA_MT0		0x3000	/* PMA map first page table		*/
 #define PMA_M0		0x4000	/* PMA map first page			*/
-#define PMA_K		0x5000	/* kernel start area 4M at 3G		*/
 
 #define PMA_RS		0x1000	/* preallocated pages, start address	*/
-#define PMA_RE		0x6000	/* preallocated pages, end address	*/
+#define PMA_RE		0x5000	/* preallocated pages, end address	*/
 
 #define PMA_FS		0x6000	/* inital page pool, start address	*/
 #define PMA_FE		0x10000	/* inital page pool, end address	*/
