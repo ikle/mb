@@ -82,10 +82,10 @@ void term_clear (void)
 
 void term_init (void)
 {
-	term_crti   = *((uint16_t *) 0x463);
-	term_width  = *((uint16_t *) 0x44a);
-	term_height = *((uint8_t *)  0x484) + 1;
-	term_frame  = (void *) 0xb8000;
+	term_crti   = *((uint16_t *) 0xC0000463);
+	term_width  = *((uint16_t *) 0xC000044A);
+	term_height = *((uint8_t *)  0xC0000484) + 1;
+	term_frame  = (void *) 0xC00B8000;
 
 	term_setcolor (COLOR_LIGHT_GREY, COLOR_BLACK);
 	term_clear ();

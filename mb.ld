@@ -9,14 +9,16 @@ SECTIONS {
 		*(.text.boot)
 	}
 
-	.text BLOCK (4K) : {
+	. += 0xC0000000;
+
+	.text BLOCK (4K) : AT (ADDR (.text) - 0xC0000000) {
 		*(.text.idt)
 		*(.text)
 		*(.rodata)
 		*(.rodata.*)
 	}
 
-	.data BLOCK (4K) : ALIGN (4K) {
+	.data BLOCK (4K) : AT (ADDR (.data) - 0xC0000000) {
 		*(.data.gdt)
 		*(.data.idt)
 		*(.data)
