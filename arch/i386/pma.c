@@ -14,7 +14,7 @@
 
 struct pma {
 	struct pma *next;
-	uint32_t refs, dev, off;
+	uint32_t refs, pma, pad;
 };
 
 static struct pma *l2[PAGE_L2_COUNT], l1_0[PAGE_L1_COUNT], *free = NULL;
@@ -22,21 +22,22 @@ static struct pma *l2[PAGE_L2_COUNT], l1_0[PAGE_L1_COUNT], *free = NULL;
 static void pma_push (struct pma *p, uint32_t pma)
 {
 	p->next = free;
-	p->dev  = 1;  /* RAM device */
-	p->off  = pma & ~PAGE_L0_MASK;
+	p->refs = 1;
+	p->pma  = pma & ~PAGE_L0_MASK;
 
 	free = p;
 }
 
-static void pma_reserve (struct pma *p)
+static void pma_reserve (struct pma *p, uint32_t pma)
 {
-	p->refs = 1;
-	p->dev  = 1;  /* RAM device */
+	p->next = NULL;
+	p->refs = 2;
+	p->pma  = pma & ~PAGE_L0_MASK;
 }
 
 static void pma_reserve_lo (uint32_t pma)
 {
-	pma_reserve (l1_0 + (pma >> PAGE_L1_POS));
+	pma_reserve (l1_0 + (pma >> PAGE_L1_POS), pma);
 }
 
 static void pma_push_lo (uint32_t pma)
@@ -78,11 +79,11 @@ static void pma_add_page (uint32_t pma, int res)
 		l0 = l1 + i1;
 	}
 
-	if (l0->dev != 0)
+	if (l0->refs != 0)
 		return;  /* EEXIST */
 
 	if (res)
-		pma_reserve (l0);
+		pma_reserve (l0, pma);
 	else
 		pma_push (l0, pma);
 }
@@ -105,16 +106,16 @@ uint32_t pma_alloc (void)
 
 	free = p->next;
 	p->next = NULL;
-	p->refs = 1;
-	return p->off;
+	p->refs = 2;
+	return p->pma;
 }
 
 uint32_t pma_ref (uint32_t pma)
 {
 	PMA_DEFINE_ACCES
 
-	if (l1 == NULL || l0->dev == 0)
-		return 0;  /* WTF? foreign page! EFAULT */
+	if (l1 == NULL || l0->refs < 2)
+		return 0;  /* EFAULT: foreign or free page */
 
 	return ++l0->refs;
 }
@@ -123,10 +124,10 @@ uint32_t pma_unref (uint32_t pma)
 {
 	PMA_DEFINE_ACCES
 
-	if (l1 == NULL || l0->dev == 0)
-		return 0;  /* WTF? foreign page! EFAULT */
+	if (l1 == NULL || l0->refs < 2)
+		return 0;  /* EFAULT: foreign or free page */
 
-	if (--l0->refs == 0)
+	if (--l0->refs == 1)
 		pma_push (l0, pma);
 
 	return l0->refs;

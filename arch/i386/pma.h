@@ -12,7 +12,7 @@
 #include <stdint.h>
 
 void pma_init      (void);
-void pma_add_range (uint32_t from, uint32_t to, int res);
+void pma_add_range (uint32_t from, uint32_t to, int reserved);
 
 uint32_t pma_alloc (void);		/* allocate one page */
 uint32_t pma_ref   (uint32_t pma);

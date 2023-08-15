@@ -70,7 +70,7 @@ void vma_unmap_page_nc (const void *vma)
 	mmu_flush (vma);
 	pma_unref (pma);
 
-	if (pma_unref (l2[i2]) == 1) {  /* no more enties in L1? */
+	if (pma_unref (l2[i2]) == 2) {  /* no more enties in L1? */
 		pma = l2[i2];
 		l2[i2] = 0;
 		mmu_flush (l1);
