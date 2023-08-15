@@ -13,19 +13,19 @@
 
 void mmu_init (void)
 {
-	uint32_t *P = (void *) PMA_P, *L = (void *) PMA_L,
+	uint32_t *P   = (void *) PMA_P,   *L  = (void *) PMA_L,
 		 *MT0 = (void *) PMA_MT0, *M0 = (void *) PMA_M0,
-		 *K = (void *) PMA_K, i;
+		 *K   = (void *) PMA_K, i;
 
-	memset (P, 0, PAGE_L0_SIZE);	/* PD				*/
+	memset (P,   0, PAGE_L0_SIZE);	/* PD				*/
 	memset (MT0, 0, PAGE_L0_SIZE);	/* PT, PMA map first PT		*/
 	memset (M0,  0, PAGE_L0_SIZE);	/* PMA map first page		*/
-	memset (K, 0, PAGE_L0_SIZE);	/* PT, kernel start area	*/
+	memset (K,   0, PAGE_L0_SIZE);	/* PT, kernel start area	*/
 
-	P[0x000] = PMA_L | 0x3;		/* boot time low 4M 1:1 mapping	*/
-	P[0x300] = PMA_K | 0x3;		/* kernel start area 4M at 3G	*/
+	P[0x000] = PMA_L   | 0x3;	/* boot time low 4M 1:1 mapping	*/
+	P[0x300] = PMA_K   | 0x3;	/* kernel start area 4M at 3G	*/
 	P[0x3fd] = PMA_MT0 | 0x3;	/* PMA map first page table	*/
-	P[0x3ff] = PMA_P | 0x3;		/* PT VAs			*/
+	P[0x3ff] = PMA_P   | 0x3;	/* PT VAs			*/
 
 	for (i = 0; i < PAGE_L1_COUNT; ++i)
 		L[i] = (i << PAGE_L1_POS) | 0x3;
