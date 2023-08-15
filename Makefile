@@ -20,7 +20,7 @@ kernel: lib/string.o arch/i386/mmu.o arch/i386/pma.o arch/i386/vma.o
 kernel: crt0.o kernel.c irq.c
 
 clean:
-	rm -f *.o kernel resque.img resque/boot/kernel
+	rm -f *.o arch/i386/*.o kernel resque.img resque/boot/kernel
 
 run: kernel
 	$(QEMU) -kernel kernel
