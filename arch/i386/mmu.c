@@ -6,10 +6,9 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#include <string.h>
-
 #include <arch/i386/mmu-defs.h>
 #include <arch/i386/mmu.h>
+#include <arch/i386/string.h>
 
 void mmu_init (void)
 {

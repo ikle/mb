@@ -6,12 +6,12 @@
  * SPDX-License-Identifier: BSD-2-Clause
  */
 
-#include <string.h>
-
 #include <arch/i386/mmu-defs.h>
 #include <arch/i386/mmu.h>
 #include <arch/i386/pma.h>
 #include <arch/i386/vma.h>
+
+#include <arch/i386/string.h>
 
 uint32_t vma_to_pma (const void *vma)
 {
