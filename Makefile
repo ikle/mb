@@ -1,5 +1,5 @@
 ASFLAGS  = -m32
-CFLAGS   = -m32 -ffreestanding -fno-PIE -I$(CURDIR)
+CFLAGS   = -m32 -ffreestanding -fno-PIE -I$(CURDIR) -O1
 LDFLAGS  = -m32 -static -nostdlib -T mb.ld -Wl,-s -Wl,--build-id=none -no-pie
 LDLIBS   = -lgcc
 
