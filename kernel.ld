@@ -32,6 +32,9 @@ SECTIONS {
 		*(.stack)
 	}
 
+	_smap = LOADADDR (.text);
+	_emap = _smap + (. - ADDR (.text));
+
 	/DISCARD/ : {
 		*(.comment)
 		*(.eh_frame*)

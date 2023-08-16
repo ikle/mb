@@ -42,6 +42,9 @@ static void pma_reserve (struct pma *p)
 
 void pma_init (void)
 {
+	extern char _smap, _emap;  /* mapped kernel region */
+
+	pma_add_range ((uint32_t) &_smap, (uint32_t) &_emap, 1);
 	pma_add_range (PMA_RS, PMA_RE, 1);
 	pma_add_range (PMA_FS, PMA_FE, 0);
 }
