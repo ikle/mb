@@ -8,16 +8,16 @@ SECTIONS {
 		*(.text.boot)
 	}
 
-	. += 0xC0000000;
+	. += 3072M;
 
-	.text BLOCK (4K) : AT (ADDR (.text) - 0xC0000000) {
+	.text BLOCK (4K) : AT (ADDR (.text) - 3072M) {
 		*(.text.idt)
 		*(.text)
 		*(.rodata)
 		*(.rodata.*)
 	}
 
-	.data BLOCK (4K) : AT (ADDR (.data) - 0xC0000000) {
+	.data BLOCK (4K) : AT (ADDR (.data) - 3072M) {
 		*(.data.gdt)
 		*(.data.idt)
 		*(.data)
