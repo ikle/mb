@@ -6,6 +6,9 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
+.ifndef ARCH_I386_GDT_INC
+.set	ARCH_I386_GDT_INC, 1
+
 .macro gdt_header
 	.section .data.gdt
 	.align	8
@@ -43,4 +46,5 @@ gdt:
 	.set	gdt_limit, . - gdt - 1
 .endm
 
+.endif  # ARCH_I386_GDT_INC
 # vi: set ft=asm :
