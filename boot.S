@@ -66,8 +66,6 @@ _start:
 	cld	# SysV ABI requires DF = 0, multiboot allows any here
 
 	movl	$stack_top, %esp
-	push	%ebx
-
 	call	mmu_init
 
 	load_gdt
@@ -80,6 +78,7 @@ _start:
 	pit_init channel=0 mode=3 counter=1193
 	sti
 
+	push	%ebx
 	call	main
 0:	hlt
 	jmp	0b
