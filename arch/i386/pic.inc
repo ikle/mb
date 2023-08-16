@@ -6,6 +6,9 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
+.ifndef ARCH_I386_PIC_INC
+.set	ARCH_I386_PIC_INC, 1
+
 .set	PIC_ICW1,	0x10
 .set	PIC_ICW1_LTIM,	0x08		# level-triggered mode
 .set	PIC_ICW1_SNGL,	0x02		# single mode
@@ -32,4 +35,5 @@
 	outb_p	$(PIC_ICW4_8086 | (\AEOI << 1 & 0x02)), $(\base + 1)
 .endm
 
+.endif  # ARCH_I386_PIC_INC
 # vi: set ft=asm :
