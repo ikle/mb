@@ -6,6 +6,9 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
+.ifndef ARCH_I386_PIT_INC
+.set	ARCH_I386_PIT_INC, 1
+
 .macro pit_init base=0x40 channel=0 mode=3 counter=0 bcd=0
 	mov	$((\channel << 6 & 0xC0) | 0x30 | (\mode << 1 & 0x0E) | (\bcd & 1)), %al
 	out	%al, $(\base + 3)
@@ -23,4 +26,5 @@
 	xchg	%al, %ah
 .endm
 
+.endif  # ARCH_I386_PIT_INC
 # vi: set ft=asm :
