@@ -62,10 +62,19 @@ static void pma_add_page (uint32_t pma, int res)
 		pma_free (p);
 }
 
+#define PMA_ALIGN_UP(x)    (((x) + PAGE_L0_MASK) & ~PAGE_L0_MASK)
+#define PMA_ALIGN_DOWN(x)  (((x)               ) & ~PAGE_L0_MASK)
+
 void pma_add_range (uint32_t from, uint32_t to, int res)
 {
-	from = (from + PAGE_L0_MASK) & ~PAGE_L0_MASK;  /* align forward  */
-	to   = (to                 ) & ~PAGE_L0_MASK;  /* align backward */
+	if (res) {
+		from = PMA_ALIGN_DOWN (from);
+		to   = PMA_ALIGN_UP   (to);
+	}
+	else {
+		from = PMA_ALIGN_UP   (from);
+		to   = PMA_ALIGN_DOWN (to);
+	}
 
 	for (; from < to; from += PAGE_L0_SIZE)
 		pma_add_page (from, res);
