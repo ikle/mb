@@ -1,6 +1,6 @@
 ASFLAGS  = -m32
 CFLAGS   = -m32 -ffreestanding -fno-PIE -I$(CURDIR) -O1
-LDFLAGS  = -m32 -static -nostdlib -T mb.ld -Wl,-s -Wl,--build-id=none -no-pie
+LDFLAGS  = -m32 -static -nostdlib -T kernel.ld -Wl,-s -Wl,--build-id=none -no-pie
 LDLIBS   = -lgcc
 
 QEMU     = qemu-system-i386 -enable-kvm
