@@ -1,7 +1,6 @@
 ENTRY (_start)
 
 SECTIONS {
-	/* load address at 1 MB */
 	. = 1M;
 
 	.boot BLOCK (4K) : {
