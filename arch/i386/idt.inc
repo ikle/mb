@@ -6,6 +6,9 @@
 # SPDX-License-Identifier: BSD-2-Clause
 #
 
+.ifndef ARCH_I386_IDT_INC
+.set	ARCH_I386_IDT_INC, 1
+
 .macro idt_header
 	.section .data.idt
 	.align	8
@@ -70,4 +73,5 @@ idt_gate_common:
 	iret
 .endm
 
+.endif  # ARCH_I386_IDT_INC
 # vi: set ft=asm :
