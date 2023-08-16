@@ -17,7 +17,7 @@
 .set	PIC_ICW4_8086,	0x01		# x86 mode
 .set	PIC_ICW4_AEOI,	0x02
 
-.macro outb_p value=$0 port=$0x80
+.macro pic_out value=$0 port=$0x80
 	mov	\value, %al
 	out	%al, \port
 	mov	$0, %al
@@ -25,14 +25,14 @@
 .endm
 
 .macro pic_init base=0x20 ICW1=0 vector=8 ICW3=0 AEOI=0
-	outb_p	$(PIC_ICW1 | PIC_ICW1_IC4 | \ICW1), $(\base)
-	outb_p	$(\vector), $(\base + 1)
+	pic_out	$(PIC_ICW1 | PIC_ICW1_IC4 | \ICW1), $(\base)
+	pic_out	$(\vector), $(\base + 1)
 
 	.if !(\ICW1 & PIC_ICW1_SNGL)
-		outb_p	$(\ICW3), $(\base + 1)
+		pic_out	$(\ICW3), $(\base + 1)
 	.endif
 
-	outb_p	$(PIC_ICW4_8086 | (\AEOI << 1 & 0x02)), $(\base + 1)
+	pic_out	$(PIC_ICW4_8086 | (\AEOI << 1 & 0x02)), $(\base + 1)
 .endm
 
 .endif  # ARCH_I386_PIC_INC
