@@ -9,6 +9,7 @@ SECTIONS {
 		*(.text.idt)
 		*(.text)
 		*(.rodata)
+		*(.rodata.*)
 	}
 
 	.data BLOCK (4K) : ALIGN (4K) {
