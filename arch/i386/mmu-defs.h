@@ -43,9 +43,6 @@ struct pma {
 #define PMA_COUNT	(PAGE_L2_COUNT * PAGE_L1_COUNT)
 #define PMA_BASE	(PAGE_L1_BASE - sizeof (struct pma) * PMA_COUNT)
 
-#define PMA_FS		0x6000	/* inital page pool, start address	*/
-#define PMA_FE		0x10000	/* inital page pool, end address	*/
-
 #define VMA_TOP		PMA_BASE
 
 #define VMA_DEFINE_ACCES						    \

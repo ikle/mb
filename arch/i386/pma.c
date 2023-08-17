@@ -46,7 +46,6 @@ void pma_init (void)
 
 	pma_add_range (0, PAGE_L0_SIZE, 1);
 	pma_add_range ((uint32_t) &_smap, (uint32_t) &_emap, 1);
-	pma_add_range (PMA_FS, PMA_FE, 0);
 }
 
 static void pma_add_page (uint32_t pma, int res)
