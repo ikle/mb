@@ -11,8 +11,6 @@
 
 #include <stdint.h>
 
-void mmu_init (void) __attribute__ ((section (".text.boot")));
-
 static inline void mmu_switch (uint32_t pd)
 {
 	asm volatile ("mov %0, %%cr3" :: "r" (pd));

@@ -9,15 +9,14 @@ QEMU     = qemu-system-i386 -enable-kvm
 
 all: kernel
 
-arch/i386/mmu.o: arch/i386/mmu-defs.h arch/i386/mmu.h arch/i386/string.h
 arch/i386/pma.o: arch/i386/mmu-defs.h arch/i386/mmu.h arch/i386/pma.h arch/i386/vma.h
 arch/i386/vma.o: arch/i386/mmu-defs.h arch/i386/mmu.h arch/i386/pma.h arch/i386/vma.h arch/i386/string.h
 
-boot.o: arch/i386/gdt.inc arch/i386/idt.inc
+boot.o: arch/i386/mmu.inc arch/i386/gdt.inc arch/i386/idt.inc
 boot.o: arch/i386/pic.inc arch/i386/pit.inc
 
 kernel: LDFLAGS += -T kernel.ld -Wl,-s
-kernel: arch/i386/mmu.o arch/i386/pma.o arch/i386/vma.o
+kernel: arch/i386/pma.o arch/i386/vma.o
 kernel: boot.o kernel.c irq.c
 
 clean:

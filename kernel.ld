@@ -8,6 +8,10 @@ SECTIONS {
 		*(.text.boot)
 	}
 
+	.tables BLOCK (4K) : {
+		*(.bss.tables)
+	}
+
 	. += 3072M;
 
 	.text BLOCK (4K) : AT (ADDR (.text) - 3072M) {
@@ -32,8 +36,8 @@ SECTIONS {
 		*(.stack)
 	}
 
-	_smap = LOADADDR (.text);
-	_emap = _smap + (. - ADDR (.text));
+	_smap = LOADADDR (.tables);
+	_emap = LOADADDR (.stack) + SIZEOF (.stack);
 
 	/DISCARD/ : {
 		*(.comment)

@@ -8,6 +8,7 @@
 
 .include "arch/i386/gdt.inc"
 .include "arch/i386/idt.inc"
+.include "arch/i386/mmu.inc"
 .include "arch/i386/pic.inc"
 .include "arch/i386/pit.inc"
 
@@ -26,6 +27,11 @@
 	.long	MB_MAGIC
 	.long	MB_FLAGS
 	.long	-(MB_MAGIC + MB_FLAGS)
+
+#
+# Memory Management Unit and PMA Tables
+#
+	mmu_tables
 
 #
 # Global Descriptor Table
@@ -49,7 +55,7 @@
 	       16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, \
 	       32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47
 	idt_gate \index
-	idt_entry entry="(\index * 16 + 0xC0101000)"
+	idt_entry entry="(\index * 16 + 0xC0105000)"
 .endr
 
 	idt_trailer
@@ -64,8 +70,7 @@ _start:
 	cli	# must be disabled already, see multiboot spec
 	cld	# SysV ABI requires DF = 0, multiboot allows any here
 
-	movl	$stack_top - 0xC0000000, %esp
-	call	mmu_init
+	mmu_init
 	lea	1f, %eax
 	jmp	*%eax
 

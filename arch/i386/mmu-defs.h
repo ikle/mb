@@ -43,14 +43,6 @@ struct pma {
 #define PMA_COUNT	(PAGE_L2_COUNT * PAGE_L1_COUNT)
 #define PMA_BASE	(PAGE_L1_BASE - sizeof (struct pma) * PMA_COUNT)
 
-#define PMA_P		0x1000	/* first process PD page		*/
-#define PMA_L		0x2000	/* low 4M with boot time 1:1 mapping	*/
-#define PMA_MT0		0x3000	/* PMA map first page table		*/
-#define PMA_M0		0x4000	/* PMA map first page			*/
-
-#define PMA_RS		0x1000	/* preallocated pages, start address	*/
-#define PMA_RE		0x5000	/* preallocated pages, end address	*/
-
 #define PMA_FS		0x6000	/* inital page pool, start address	*/
 #define PMA_FE		0x10000	/* inital page pool, end address	*/
 
