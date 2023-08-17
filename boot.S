@@ -71,12 +71,7 @@ _start:
 	cld	# SysV ABI requires DF = 0, multiboot allows any here
 
 	mmu_init
-	lea	1f, %eax
-	jmp	*%eax
 
-.section .text
-.align 16
-1:
 	movl	$stack_top, %esp
 	load_gdt
 	call	pma_init
@@ -88,6 +83,12 @@ _start:
 	pit_init channel=0 mode=3 counter=1193
 	sti
 
+	lea	1f, %eax
+	jmp	*%eax
+
+.section .text
+.align 16
+1:
 	push	%ebx
 	call	main
 0:	hlt
